@@ -1336,6 +1336,17 @@ vector<cv::KeyPoint> System::GetTrackedKeyPointsUn()
     return mTrackedKeyPointsUn;
 }
 
+vector<MapPoint*> System::GetAllMapPoints()
+{
+    vector<MapPoint*> allPoints;
+    for(Map* pMap : mpAtlas->GetAllMaps())
+    {
+        vector<MapPoint*> pts = pMap->GetAllMapPoints();
+        allPoints.insert(allPoints.end(), pts.begin(), pts.end());
+    }
+    return allPoints;
+}
+
 double System::GetTimeFromIMUInit()
 {
     double aux = mpLocalMapper->GetCurrKFTime()-mpLocalMapper->mFirstTs;

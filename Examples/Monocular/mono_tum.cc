@@ -151,6 +151,24 @@ int main(int argc, char **argv)
     // Save camera trajectory
     SLAM.SaveKeyFrameTrajectoryTUM("KeyFrameTrajectory.txt");
 
+    // Save sparse point cloud as PLY
+    {
+        vector<ORB_SLAM3::MapPoint*> mapPoints = SLAM.GetAllMapPoints();
+        ofstream ply("MapPoints.ply");
+        ply << "ply\nformat ascii 1.0\n";
+        ply << "element vertex " << mapPoints.size() << "\n";
+        ply << "property float x\nproperty float y\nproperty float z\n";
+        ply << "end_header\n";
+        for(auto* mp : mapPoints)
+        {
+            if(!mp || mp->isBad()) continue;
+            Eigen::Vector3f pos = mp->GetWorldPos();
+            ply << pos(0) << " " << pos(1) << " " << pos(2) << "\n";
+        }
+        ply.close();
+        cout << "Saved " << mapPoints.size() << " map points to MapPoints.ply" << endl;
+    }
+
     return 0;
 }
 
